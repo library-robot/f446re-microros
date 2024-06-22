@@ -16,11 +16,13 @@
   *
   ******************************************************************************
   */
+
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
-#include "cmsis_os.h"
+
 /* USER CODE BEGIN 0 */
+#include "cmsis_os.h"
 uint8_t BLE_RX_BUF[100];
 extern osThreadId transePositionHandle;
 #define positionSignal 0x0003

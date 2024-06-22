@@ -57,8 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Limit_switch_up_Pin GPIO_PIN_13
-#define Limit_switch_up_GPIO_Port GPIOC
+#define BTN_Pin GPIO_PIN_13
+#define BTN_GPIO_Port GPIOC
 #define com_TX_Pin GPIO_PIN_2
 #define com_TX_GPIO_Port GPIOA
 #define com_RX_Pin GPIO_PIN_3
@@ -85,6 +85,9 @@ void Error_Handler(void);
 #define F103re_TX_GPIO_Port GPIOC
 #define F103re_RX_Pin GPIO_PIN_2
 #define F103re_RX_GPIO_Port GPIOD
+#define Limit_switch_up_Pin GPIO_PIN_8
+#define Limit_switch_up_GPIO_Port GPIOB
+#define Limit_switch_up_EXTI_IRQn EXTI9_5_IRQn
 #define Limit_switch_down_Pin GPIO_PIN_9
 #define Limit_switch_down_GPIO_Port GPIOB
 #define Limit_switch_down_EXTI_IRQn EXTI9_5_IRQn

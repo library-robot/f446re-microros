@@ -80,6 +80,9 @@ extern TIM_HandleTypeDef htim1;
 
 
 int motor_status = 0;
+int pub_status = 0;
+int pub_nav = 0;
+char xChar[6],yChar[6];
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId rfidExecuteTaskHandle;
@@ -87,7 +90,7 @@ osThreadId tagNumTransmitTHandle;
 osThreadId motorTaskHandle;
 osThreadId transmitTask2Handle;
 osThreadId RosTaskHandle;
-uint32_t RosTaskBuffer[ 10000 ];
+uint32_t RosTaskBuffer[ 3000 ];
 osStaticThreadDef_t RosTaskControlBlock;
 osThreadId transePositionHandle;
 
@@ -170,7 +173,7 @@ void MX_FREERTOS_Init(void) {
   transmitTask2Handle = osThreadCreate(osThread(transmitTask2), NULL);
 
   /* definition and creation of RosTask */
-  osThreadStaticDef(RosTask, StartRosTask, osPriorityLow, 0, 10000, RosTaskBuffer, &RosTaskControlBlock);
+  osThreadStaticDef(RosTask, StartRosTask, osPriorityAboveNormal, 0, 3000, RosTaskBuffer, &RosTaskControlBlock);
   RosTaskHandle = osThreadCreate(osThread(RosTask), NULL);
 
   /* definition and creation of transePosition */
@@ -199,7 +202,9 @@ void StartDefaultTask(void const * argument)
 	read_rfid_number();
 	read_location();
 //	read_command();
-
+	if(HAL_GPIO_ReadPin(BTN_GPIO_Port, BTN_Pin) == GPIO_PIN_RESET){
+		pub_status = 1;
+	}
     osDelay(50);
   }
   /* USER CODE END StartDefaultTask */
@@ -324,17 +329,10 @@ void subscription_str_callback(const void * msgin)
   char str[100];
   strcpy(str, msg->data.data);
   if(!strcmp(str,"scan")){
-	  sprintf(pub_str_msg.data.data, "launch", str);
 	  vTaskResume(motorTaskHandle);
 	  vTaskResume(rfidExecuteTaskHandle);
-  }else{
-	  sprintf(pub_str_msg.data.data, "F446RE heard: %s", str);
   }
-  //sprintf(pub_str_msg.data.data, "F446RE heard: %s", str);
-  pub_str_msg.data.size = strlen(pub_str_msg.data.data);
-  //rcl_publish(&publisher_string_scan, &pub_str_msg, NULL);
-  //Publisher_test();
-  //debug_led();
+
 }
 
 void debug_led()
@@ -378,7 +376,6 @@ void StartRosTask(void const * argument)
 
 	  rcl_subscription_t subscriber_oper;
 	  std_msgs__msg__String sub_str_msg;
-	  sensor_msgs__msg__Imu sub_imu_msg;
 	  rclc_support_t support;
 	  rcl_allocator_t allocator;
 	  rcl_node_t node;
@@ -429,21 +426,23 @@ void StartRosTask(void const * argument)
 	  sub_str_msg.data.size = 0;
 	  sub_str_msg.data.capacity = ARRAY_LEN;
 
-	  sub_imu_msg.header.frame_id.capacity = 100;
-	  sub_imu_msg.header.frame_id.data =(char * ) malloc(100 * sizeof(char));
-	  sub_imu_msg.header.frame_id.size = 0;
 
 	  // execute subscriber
-	  rclc_executor_spin(&executor);
-	  // cleaning Up
-	  RCCHECK(rcl_publisher_fini(&publisher_string_scan, &node));
-	  RCCHECK(rcl_publisher_fini(&publisher_string_pos, &node));
-	  RCCHECK(rcl_subscription_fini(&subscriber_oper, &node));
-	  RCCHECK(rcl_node_fini(&node));
+	  //rclc_executor_spin(&executor);
+
 	  /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	  if(pub_nav){
+		  Publisher_pos();
+		  pub_nav = 0;
+	  }
+	  if(pub_status){
+		  Publisher_state();
+		  pub_status = 0;
+	  }
+	  rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+	  osDelay(100);
   }
   /* USER CODE END StartRosTask */
 }
@@ -464,7 +463,6 @@ void StartTransePosition(void const * argument)
   {
 	  event = osSignalWait(positionSignal, 100);
 	  	if(event.value.signals == positionSignal){
-	  		char xChar[6],yChar[6];
 			HAL_UART_Transmit(&huart2, BLE_RX_BUF, 12, 1000);
 			if(BLE_RX_BUF[0] == 'z'){
 				//정비시작
@@ -476,7 +474,7 @@ void StartTransePosition(void const * argument)
 					xChar[i] = BLE_RX_BUF[i];
 					yChar[i] = BLE_RX_BUF[i+6];
 				}
-				Publisher_pos(xChar,yChar);
+				pub_nav = 1;
 			}
 
 			HAL_UART_Receive_IT(&huart5, BLE_RX_BUF,12);

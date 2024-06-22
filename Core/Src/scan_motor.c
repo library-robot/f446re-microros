@@ -19,6 +19,7 @@ int limit_switch_up = 0;
 int limit_switch_down = 0;
 
 extern int motor_status;
+extern int pub_status;
 extern osThreadId motorTaskHandle;
 extern osThreadId rfidExecuteTaskHandle;
 
@@ -27,12 +28,12 @@ void scan_motor_up(){
 		TIM2->CCR4 = 0;
 		motor_status = 1;
 		limit_switch_up = 0;
-		Publisher_state();
+		pub_status = 1;
 		vTaskSuspend(rfidExecuteTaskHandle);
 		vTaskSuspend(motorTaskHandle);
 	}else{
 		change_motor_direction(1);
-		TIM2->CCR4 = 20;
+		TIM2->CCR4 = 99;
 	}
 }
 
@@ -41,12 +42,12 @@ void scan_motor_down(){
 		TIM2->CCR4 = 0;
 		motor_status = 0;
 		limit_switch_down = 0;
-		Publisher_state();
+		pub_status = 1;
 		vTaskSuspend(rfidExecuteTaskHandle);
 		vTaskSuspend(motorTaskHandle);
 	}else{
 		change_motor_direction(0);
-		TIM2->CCR4 = 20;
+		TIM2->CCR4 = 99;
 	}
 }
 

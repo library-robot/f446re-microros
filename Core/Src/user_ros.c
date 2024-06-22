@@ -12,6 +12,7 @@
 extern rcl_publisher_t publisher_string_scan;
 extern rcl_publisher_t publisher_string_pos;
 extern UART_HandleTypeDef huart2;
+extern char xChar[6],yChar[6];
 
 void Publisher_state(){
 	std_msgs__msg__String msg;
@@ -30,10 +31,10 @@ void Publisher_test(){
 }
 
 /*double type input X,Y */
-void Publisher_pos(char *x, char *y){
+void Publisher_pos(){
 	std_msgs__msg__String msg;
 	char str[100] = "";
-	sprintf(str, "%s %s", x,y);
+	sprintf(str, "%s %s", xChar,yChar);
 	msg.data.data = str;
 	msg.data.size = strlen(str);
 	HAL_UART_Transmit(&huart2, str, 12, 1000);

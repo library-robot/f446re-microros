@@ -10,6 +10,6 @@
 
 void Publisher_test();
 void Publisher_state();
-void Publisher_pos(char *x, char *y); /*float type input X,Y */
+void Publisher_pos(); /*float type input X,Y */
 
 #endif /* INC_USER_ROS_H_ */
