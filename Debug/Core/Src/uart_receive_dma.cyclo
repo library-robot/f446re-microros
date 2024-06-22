@@ -1,0 +1,13 @@
+../Core/Src/uart_receive_dma.c:32:6:uart_init	1
+../Core/Src/uart_receive_dma.c:43:10:uart_available	1
+../Core/Src/uart_receive_dma.c:52:9:uart_q8_read	2
+../Core/Src/uart_receive_dma.c:66:6:read_rfid_number	6
+../Core/Src/uart_receive_dma.c:87:6:transmitData	3
+../Core/Src/uart_receive_dma.c:109:6:locationCatRfid	2
+../Core/Src/uart_receive_dma.c:115:10:uart5_available	1
+../Core/Src/uart_receive_dma.c:124:9:uart5_q8_read	2
+../Core/Src/uart_receive_dma.c:135:6:read_location	5
+../Core/Src/uart_receive_dma.c:179:10:uart2_available	1
+../Core/Src/uart_receive_dma.c:188:9:uart2_q8_read	2
+../Core/Src/uart_receive_dma.c:200:6:read_command	4
+../Core/Src/uart_receive_dma.c:216:6:transmitCommand	2
