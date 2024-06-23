@@ -34,9 +34,9 @@ void Publisher_test(){
 void Publisher_pos(){
 	std_msgs__msg__String msg;
 	char str[100] = "";
-	sprintf(str, "%s %s", xChar,yChar);
+	sprintf(str, "x%s y%s", xChar,yChar);
 	msg.data.data = str;
 	msg.data.size = strlen(str);
-	HAL_UART_Transmit(&huart2, str, 12, 1000);
+	//HAL_UART_Transmit(&huart2, str, 12, 1000);
 	rcl_publish(&publisher_string_pos, &msg, NULL);
 }

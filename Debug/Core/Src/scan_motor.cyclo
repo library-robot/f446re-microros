@@ -1,3 +1,3 @@
-../Core/Src/scan_motor.c:25:6:scan_motor_up	2
-../Core/Src/scan_motor.c:39:6:scan_motor_down	2
-../Core/Src/scan_motor.c:54:6:change_motor_direction	3
+../Core/Src/scan_motor.c:26:6:scan_motor_up	2
+../Core/Src/scan_motor.c:40:6:scan_motor_down	2
+../Core/Src/scan_motor.c:55:6:change_motor_direction	4

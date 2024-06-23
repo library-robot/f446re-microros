@@ -33,7 +33,7 @@ void scan_motor_up(){
 		vTaskSuspend(motorTaskHandle);
 	}else{
 		change_motor_direction(1);
-		TIM2->CCR4 = 99;
+		TIM2->CCR4 = 550;
 	}
 }
 
@@ -47,7 +47,7 @@ void scan_motor_down(){
 		vTaskSuspend(motorTaskHandle);
 	}else{
 		change_motor_direction(0);
-		TIM2->CCR4 = 99;
+		TIM2->CCR4 = 270;
 	}
 }
 
@@ -59,5 +59,8 @@ void change_motor_direction(int direction){
 	}else if(direction == 0){
 		HAL_GPIO_WritePin(Direction0_GPIO_Port, Direction0_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(Direction1_GPIO_Port, Direction1_Pin, GPIO_PIN_SET);
+	}else if(direction == 2){
+		HAL_GPIO_WritePin(Direction0_GPIO_Port, Direction0_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Direction1_GPIO_Port, Direction1_Pin, GPIO_PIN_RESET);
 	}
 }

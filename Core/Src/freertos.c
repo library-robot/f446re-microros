@@ -201,6 +201,7 @@ void StartDefaultTask(void const * argument)
   {
 	read_rfid_number();
 	read_location();
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); //LED turned off
 //	read_command();
 	if(HAL_GPIO_ReadPin(BTN_GPIO_Port, BTN_Pin) == GPIO_PIN_RESET){
 		pub_status = 1;
@@ -328,7 +329,7 @@ void subscription_str_callback(const void * msgin)
   pub_str_msg = *msg;
   char str[100];
   strcpy(str, msg->data.data);
-  if(!strcmp(str,"scan")){
+  if(!strcmp(str,"motor_scan")){
 	  vTaskResume(motorTaskHandle);
 	  vTaskResume(rfidExecuteTaskHandle);
   }
@@ -353,6 +354,8 @@ void StartRosTask(void const * argument)
 {
   /* USER CODE BEGIN StartRosTask */
 	  // micro-ROS configuration
+
+
 	  char test_array[ARRAY_LEN];
 	  memset(test_array,'z',ARRAY_LEN);
 
@@ -431,8 +434,10 @@ void StartRosTask(void const * argument)
 	  //rclc_executor_spin(&executor);
 
 	  /* Infinite loop */
+
   for(;;)
   {
+
 	  if(pub_nav){
 		  Publisher_pos();
 		  pub_nav = 0;
@@ -443,7 +448,9 @@ void StartRosTask(void const * argument)
 	  }
 	  rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 	  osDelay(100);
+
   }
+
   /* USER CODE END StartRosTask */
 }
 

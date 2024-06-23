@@ -74,17 +74,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 	if(GPIO_Pin == Limit_switch_up_Pin){
 		if(HAL_GetTick() - before_tick1 >= 300){
-			before_tick1 = HAL_GetTick();
-			TIM2->CCR4 = 0;
-			limit_switch_up = 1;
-			limit_switch_down = 0;
+			if(!limit_switch_up){
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); //LED turned on
+				before_tick1 = HAL_GetTick();
+				TIM2->CCR4 = 0;
+				change_motor_direction(2);
+				limit_switch_up = 1;
+				limit_switch_down = 0;
+			}
 		}
 	}else if(GPIO_Pin == Limit_switch_down_Pin){
 		if(HAL_GetTick() - before_tick2 >= 300){
-			before_tick2 = HAL_GetTick();
-			TIM2->CCR4 = 0;
-			limit_switch_down = 1;
-			limit_switch_up = 0;
+			if(!limit_switch_down){
+				before_tick2 = HAL_GetTick();
+				TIM2->CCR4 = 0;
+				change_motor_direction(2);
+				limit_switch_down = 1;
+				limit_switch_up = 0;
+			}
+
 		}
 	}
 }
@@ -133,8 +141,9 @@ int main(void)
   HAL_UART_Receive_IT(&huart5, BLE_RX_BUF, 12);
 
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
-  HAL_GPIO_WritePin(Direction0_GPIO_Port, Direction0_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(Direction0_GPIO_Port, Direction0_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(Direction1_GPIO_Port, Direction1_Pin, GPIO_PIN_RESET);
+  TIM2->CCR4 = 0;
 
   /* USER CODE END 2 */
 
