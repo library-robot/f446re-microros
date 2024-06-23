@@ -74,25 +74,20 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 	if(GPIO_Pin == Limit_switch_up_Pin){
 		if(HAL_GetTick() - before_tick1 >= 300){
-			if(!limit_switch_up){
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); //LED turned on
-				before_tick1 = HAL_GetTick();
-				TIM2->CCR4 = 0;
-				change_motor_direction(2);
-				limit_switch_up = 1;
-				limit_switch_down = 0;
-			}
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); //LED turned on
+			before_tick1 = HAL_GetTick();
+			TIM2->CCR4 = 0;
+			change_motor_direction(2);
+			limit_switch_up = 1;
+			limit_switch_down = 0;
 		}
 	}else if(GPIO_Pin == Limit_switch_down_Pin){
 		if(HAL_GetTick() - before_tick2 >= 300){
-			if(!limit_switch_down){
-				before_tick2 = HAL_GetTick();
-				TIM2->CCR4 = 0;
-				change_motor_direction(2);
-				limit_switch_down = 1;
-				limit_switch_up = 0;
-			}
-
+			before_tick2 = HAL_GetTick();
+			TIM2->CCR4 = 0;
+			change_motor_direction(2);
+			limit_switch_down = 1;
+			limit_switch_up = 0;
 		}
 	}
 }
